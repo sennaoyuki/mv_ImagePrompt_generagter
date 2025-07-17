@@ -2,6 +2,7 @@
   "name": "listing-ad-ranking-frontend",
   "version": "1.0.0",
   "description": "Frontend React app for listing ad ranking system",
+  "homepage": "./",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useApp } from '../context/AppContext';
+import { useSearchParams } from 'react-router-dom';
 import { genresApi, regionsApi, itemsApi } from '../utils/api';
 import { GenerateRequest } from '../types';
 import GenreSelector from '../components/GenreSelector/GenreSelector';
@@ -152,11 +153,42 @@ const ExportButton = styled.button<{ $variant?: 'secondary' }>`
 
 const Generator: React.FC = () => {
   const { state, actions } = useApp();
+  const [searchParams] = useSearchParams();
   const [genreInput, setGenreInput] = useState('');
   const [generateConfig, setGenerateConfig] = useState({
     seoOptimized: false,
     includeCompliance: true,
   });
+
+  // Get genre from URL parameters if available
+  useEffect(() => {
+    const genreFromUrl = searchParams.get('genre');
+    if (genreFromUrl) {
+      const decodedGenre = decodeURIComponent(genreFromUrl);
+      setGenreInput(decodedGenre);
+      // Auto-generate items if genre is provided from URL
+      setTimeout(() => {
+        generateItemsForGenre(decodedGenre);
+      }, 500);
+    }
+  }, [searchParams]);
+
+  const generateItemsForGenre = (genre: string) => {
+    if (!genre.trim()) return;
+    
+    try {
+      actions.setLoading(true);
+      actions.setError(null);
+
+      const mockItems = generateMockItems(genre, generateConfig);
+      actions.setGeneratedItems(mockItems);
+      actions.setSelectedItems(mockItems.filter(item => item.priority === 'required').map(item => item.id));
+    } catch (error) {
+      actions.setError(error instanceof Error ? error.message : '項目の生成に失敗しました');
+    } finally {
+      actions.setLoading(false);
+    }
+  };
 
   const popularGenres = [
     '医療脱毛', 'AGA治療', '包茎手術', '痩身治療', 
