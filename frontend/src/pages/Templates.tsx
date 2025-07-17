@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { templatesApi } from '../utils/api';
 import LoadingSpinner from '../components/Common/LoadingSpinner';
 import ErrorMessage from '../components/Common/ErrorMessage';
 

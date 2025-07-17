@@ -2,9 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useApp } from '../context/AppContext';
 import { useSearchParams } from 'react-router-dom';
-import { genresApi, regionsApi, itemsApi } from '../utils/api';
-import { GenerateRequest } from '../types';
-import GenreSelector from '../components/GenreSelector/GenreSelector';
+import { Item } from '../types';
 import ItemList from '../components/ItemList/ItemList';
 import LoadingSpinner from '../components/Common/LoadingSpinner';
 import ErrorMessage from '../components/Common/ErrorMessage';
@@ -171,7 +169,7 @@ const Generator: React.FC = () => {
         generateItemsForGenre(decodedGenre);
       }, 500);
     }
-  }, [searchParams]);
+  }, [searchParams, generateItemsForGenre]);
 
   const generateItemsForGenre = (genre: string) => {
     if (!genre.trim()) return;
@@ -201,16 +199,17 @@ const Generator: React.FC = () => {
         actions.setLoading(true);
         
         // Mock data for demonstration
+        const currentTime = new Date().toISOString();
         const mockGenres = [
-          { id: '1', name: '医療脱毛', category: 'medical' as const, seoKeywords: ['脱毛', '医療'], createdAt: new Date(), updatedAt: new Date() },
-          { id: '2', name: 'AGA治療', category: 'medical' as const, seoKeywords: ['AGA', '薄毛'], createdAt: new Date(), updatedAt: new Date() },
-          { id: '3', name: '包茎手術', category: 'medical' as const, seoKeywords: ['包茎', '手術'], createdAt: new Date(), updatedAt: new Date() },
-          { id: '4', name: '痩身治療', category: 'medical' as const, seoKeywords: ['痩身', 'ダイエット'], createdAt: new Date(), updatedAt: new Date() },
+          { id: '1', name: '医療脱毛', category: 'medical' as const, seoKeywords: ['脱毛', '医療'], createdAt: currentTime, updatedAt: currentTime },
+          { id: '2', name: 'AGA治療', category: 'medical' as const, seoKeywords: ['AGA', '薄毛'], createdAt: currentTime, updatedAt: currentTime },
+          { id: '3', name: '包茎手術', category: 'medical' as const, seoKeywords: ['包茎', '手術'], createdAt: currentTime, updatedAt: currentTime },
+          { id: '4', name: '痩身治療', category: 'medical' as const, seoKeywords: ['痩身', 'ダイエット'], createdAt: currentTime, updatedAt: currentTime },
         ];
         
         const mockRegions = [
-          { id: '1', name: '東京', prefecture: '東京都', areaCode: '13', createdAt: new Date(), updatedAt: new Date() },
-          { id: '2', name: '大阪', prefecture: '大阪府', areaCode: '27', createdAt: new Date(), updatedAt: new Date() },
+          { id: '1', name: '東京', prefecture: '東京都', areaCode: '13', createdAt: currentTime, updatedAt: currentTime },
+          { id: '2', name: '大阪', prefecture: '大阪府', areaCode: '27', createdAt: currentTime, updatedAt: currentTime },
         ];
         
         actions.setGenres(mockGenres);
@@ -236,9 +235,9 @@ const Generator: React.FC = () => {
       actions.setError(null);
 
       // Find matching genre from available genres or create generic one
-      const matchingGenre = state.genres.find(g => 
-        g.name.includes(genreInput) || genreInput.includes(g.name)
-      );
+      // const matchingGenre = state.genres.find(g => 
+      //   g.name.includes(genreInput) || genreInput.includes(g.name)
+      // );
 
       // Generate mock items based on genre input
       const mockItems = generateMockItems(genreInput, generateConfig);
@@ -262,8 +261,15 @@ const Generator: React.FC = () => {
     }
   };
 
-  const generateMockItems = (genre: string, config: any) => {
-    const baseItems = [
+  const generateMockItems = (genre: string, config: any): Item[] => {
+    const currentTime = new Date().toISOString();
+    const defaultGuidelines = {
+      recommendedLength: 200,
+      keywordSuggestions: [genre, 'ランキング', '比較'],
+      avoidExpressions: ['絶対', '必ず', '100%']
+    };
+
+    const baseItems: Item[] = [
       {
         id: '1',
         name: 'ランキング表示',
@@ -271,6 +277,9 @@ const Generator: React.FC = () => {
         priority: 'required' as const,
         type: 'common' as const,
         seoWeight: 9,
+        contentGuidelines: defaultGuidelines,
+        createdAt: currentTime,
+        updatedAt: currentTime,
       },
       {
         id: '2',
@@ -279,6 +288,9 @@ const Generator: React.FC = () => {
         priority: 'required' as const,
         type: 'common' as const,
         seoWeight: 8,
+        contentGuidelines: defaultGuidelines,
+        createdAt: currentTime,
+        updatedAt: currentTime,
       },
       {
         id: '3',
@@ -287,6 +299,9 @@ const Generator: React.FC = () => {
         priority: 'recommended' as const,
         type: 'common' as const,
         seoWeight: 7,
+        contentGuidelines: defaultGuidelines,
+        createdAt: currentTime,
+        updatedAt: currentTime,
       },
       {
         id: '4',
@@ -295,6 +310,9 @@ const Generator: React.FC = () => {
         priority: 'required' as const,
         type: 'common' as const,
         seoWeight: 6,
+        contentGuidelines: defaultGuidelines,
+        createdAt: currentTime,
+        updatedAt: currentTime,
       },
     ];
 
@@ -308,6 +326,9 @@ const Generator: React.FC = () => {
           priority: 'required' as const,
           type: 'genre_specific' as const,
           seoWeight: 8,
+          contentGuidelines: { ...defaultGuidelines, keywordSuggestions: ['脱毛機器', 'レーザー', '技術'] },
+          createdAt: currentTime,
+          updatedAt: currentTime,
         },
         {
           id: '6',
@@ -316,6 +337,9 @@ const Generator: React.FC = () => {
           priority: 'required' as const,
           type: 'genre_specific' as const,
           seoWeight: 9,
+          contentGuidelines: { ...defaultGuidelines, keywordSuggestions: ['部位別', '料金', 'VIO'] },
+          createdAt: currentTime,
+          updatedAt: currentTime,
         },
         {
           id: '7',
@@ -324,6 +348,9 @@ const Generator: React.FC = () => {
           priority: 'recommended' as const,
           type: 'genre_specific' as const,
           seoWeight: 7,
+          contentGuidelines: { ...defaultGuidelines, keywordSuggestions: ['痛み', '麻酔', '軽減'] },
+          createdAt: currentTime,
+          updatedAt: currentTime,
         },
       );
     }
@@ -337,6 +364,9 @@ const Generator: React.FC = () => {
           priority: 'required' as const,
           type: 'genre_specific' as const,
           seoWeight: 9,
+          contentGuidelines: { ...defaultGuidelines, keywordSuggestions: ['治療方法', '投薬', '植毛'] },
+          createdAt: currentTime,
+          updatedAt: currentTime,
         },
         {
           id: '9',
@@ -345,6 +375,9 @@ const Generator: React.FC = () => {
           priority: 'required' as const,
           type: 'genre_specific' as const,
           seoWeight: 8,
+          contentGuidelines: { ...defaultGuidelines, keywordSuggestions: ['フィナステリド', 'ミノキシジル', '薬剤'] },
+          createdAt: currentTime,
+          updatedAt: currentTime,
         },
         {
           id: '10',
@@ -353,6 +386,9 @@ const Generator: React.FC = () => {
           priority: 'required' as const,
           type: 'compliance' as const,
           seoWeight: 6,
+          contentGuidelines: { ...defaultGuidelines, keywordSuggestions: ['副作用', 'リスク', '注意'] },
+          createdAt: currentTime,
+          updatedAt: currentTime,
         },
       );
     }
@@ -365,6 +401,9 @@ const Generator: React.FC = () => {
         priority: 'required' as const,
         type: 'compliance' as const,
         seoWeight: 5,
+        contentGuidelines: { ...defaultGuidelines, keywordSuggestions: ['薬機法', '景品表示法', '法的'] },
+        createdAt: currentTime,
+        updatedAt: currentTime,
       });
     }
 
