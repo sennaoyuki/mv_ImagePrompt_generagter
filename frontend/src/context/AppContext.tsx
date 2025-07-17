@@ -84,3 +84,29 @@ export const useApp = (): AppContextType => {
   }
   return context;
 };
+
+// Custom hooks for specific state management
+export const useItemsState = () => {
+  const { state } = useApp();
+  return {
+    generatedItems: state.generatedItems,
+    selectedItems: state.selectedItems,
+    customItems: state.customItems,
+  };
+};
+
+export const useGenresState = () => {
+  const { state } = useApp();
+  return {
+    genres: state.genres,
+    selectedGenres: state.selectedGenres,
+  };
+};
+
+export const useRegionsState = () => {
+  const { state } = useApp();
+  return {
+    regions: state.regions,
+    selectedRegions: state.selectedRegions,
+  };
+};

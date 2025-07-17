@@ -158,6 +158,50 @@ const ItemDescription = styled.p`
   line-height: ${({ theme }) => theme.typography.lineHeights.relaxed};
 `;
 
+const SEODetails = styled.div`
+  margin-top: ${({ theme }) => theme.spacing.sm};
+  padding: ${({ theme }) => theme.spacing.sm};
+  background-color: ${({ theme }) => theme.colors.backgroundSecondary};
+  border-radius: ${({ theme }) => theme.borderRadius.sm};
+  border-left: 3px solid ${({ theme }) => theme.colors.primary};
+`;
+
+const SEOTitle = styled.h4`
+  font-size: ${({ theme }) => theme.typography.fontSizes.sm};
+  font-weight: ${({ theme }) => theme.typography.fontWeights.semibold};
+  color: ${({ theme }) => theme.colors.text};
+  margin: 0 0 ${({ theme }) => theme.spacing.xs} 0;
+`;
+
+const SEOContent = styled.div`
+  font-size: ${({ theme }) => theme.typography.fontSizes.xs};
+  color: ${({ theme }) => theme.colors.textSecondary};
+  line-height: ${({ theme }) => theme.typography.lineHeights.relaxed};
+`;
+
+const SEOMetrics = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.md};
+  margin-top: ${({ theme }) => theme.spacing.xs};
+`;
+
+const SEOMetric = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.xs};
+`;
+
+const MetricLabel = styled.span`
+  font-size: ${({ theme }) => theme.typography.fontSizes.xs};
+  color: ${({ theme }) => theme.colors.textMuted};
+`;
+
+const MetricValue = styled.span`
+  font-size: ${({ theme }) => theme.typography.fontSizes.sm};
+  font-weight: ${({ theme }) => theme.typography.fontWeights.semibold};
+  color: ${({ theme }) => theme.colors.primary};
+`;
+
 const ItemList: React.FC<ItemListProps> = ({
   items,
   selectedItems,
@@ -232,6 +276,32 @@ const ItemList: React.FC<ItemListProps> = ({
               </ItemBadges>
             </ItemHeader>
             <ItemDescription>{item.description}</ItemDescription>
+            
+            {item.seoWeight && item.seoWeight > 0 && (
+              <SEODetails>
+                <SEOTitle>SEO効果・実装方法</SEOTitle>
+                <SEOContent>
+                  この項目は検索上位表示に効果的です。
+                  {item.type === 'common' && 'どのジャンルでも基本的なSEO効果が期待できます。'}
+                  {item.type === 'genre_specific' && '特定ジャンルで専門性を示すことでSEO効果が高まります。'}
+                  {item.type === 'region_specific' && '地域特化により地域検索での上位表示が期待できます。'}
+                </SEOContent>
+                <SEOMetrics>
+                  <SEOMetric>
+                    <MetricLabel>SEO重要度</MetricLabel>
+                    <MetricValue>{item.seoWeight}/10</MetricValue>
+                  </SEOMetric>
+                  <SEOMetric>
+                    <MetricLabel>優先度</MetricLabel>
+                    <MetricValue>{getFilterLabel(item.priority)}</MetricValue>
+                  </SEOMetric>
+                  <SEOMetric>
+                    <MetricLabel>種別</MetricLabel>
+                    <MetricValue>{getTypeLabel(item.type)}</MetricValue>
+                  </SEOMetric>
+                </SEOMetrics>
+              </SEODetails>
+            )}
           </ItemCard>
         ))}
       </ItemGrid>
