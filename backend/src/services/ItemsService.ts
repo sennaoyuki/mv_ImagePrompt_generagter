@@ -8,12 +8,12 @@ import { ComplianceRulesModel } from '../models/ComplianceRulesModel';
 import {
   GenerateRequest,
   GenerateResponse,
-  PaginationParams,
-  PaginatedResponse,
-  CommonItem,
   GenreSpecificItem,
   RegionSpecificItem,
   ComplianceItem,
+  PaginationParams,
+  PaginatedResponse,
+  CommonItem,
   Priority,
 } from '../types';
 
@@ -111,19 +111,19 @@ export class ItemsService {
     return this.getCommonItems(filters, pagination);
   }
 
-  async getItemById(id: string): Promise<any> {
+  async getItemById(id: string): Promise<CommonItem | GenreSpecificItem | RegionSpecificItem | ComplianceItem | null> {
     // Try to find in all item types
     let item = await this.commonItemsModel.findById(id);
-    if (item) return { ...item, type: 'common' };
+    if (item) return { ...item, type: 'common' as const };
 
-    item = await this.genreSpecificItemsModel.findById(id);
-    if (item) return { ...item, type: 'genre_specific' };
+    const genreItem = await this.genreSpecificItemsModel.findById(id);
+    if (genreItem) return { ...genreItem, type: 'genre_specific' as const };
 
-    item = await this.regionSpecificItemsModel.findById(id);
-    if (item) return { ...item, type: 'region_specific' };
+    const regionItem = await this.regionSpecificItemsModel.findById(id);
+    if (regionItem) return { ...regionItem, type: 'region_specific' as const };
 
-    item = await this.complianceItemsModel.findById(id);
-    if (item) return { ...item, type: 'compliance' };
+    const complianceItem = await this.complianceItemsModel.findById(id);
+    if (complianceItem) return { ...complianceItem, type: 'compliance' as const };
 
     return null;
   }

@@ -108,7 +108,7 @@ export class UserCustomizationsModel {
   async delete(id: string): Promise<boolean> {
     const query = 'DELETE FROM user_customizations WHERE id = $1';
     const result = await pool.query(query, [id]);
-    return result.rowCount > 0;
+    return (result.rowCount ?? 0) > 0;
   }
 
   private mapRowToCustomization(row: any): UserCustomization {

@@ -141,6 +141,8 @@ export interface SEOGuideline {
 export interface SaveCustomizationRequest {
   userId: string;
   projectName: string;
+  selectedGenres: string[];
+  selectedRegions: string[];
   selectedItems: string[];
   customItems: CustomItem[];
   settings: ProjectSettings;

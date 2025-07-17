@@ -183,7 +183,7 @@ export class CommonItemsModel {
   async delete(id: string): Promise<boolean> {
     const query = 'DELETE FROM common_items WHERE id = $1';
     const result = await pool.query(query, [id]);
-    return result.rowCount > 0;
+    return (result.rowCount ?? 0) > 0;
   }
 
   private mapRowToItem(row: any): CommonItem {
